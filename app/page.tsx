@@ -47,7 +47,7 @@ export default function Home() {
         <div className="space-y-4 mt-16">
 
           <button
-            onClick={() => router.push("/signup")}
+            onClick={() => router.replace("/dashboard")}
             className="w-full bg-[#00F5A0] text-black font-bold py-4 rounded-xl tracking-widest hover:opacity-90 transition"
           >
             BEGIN RUN
