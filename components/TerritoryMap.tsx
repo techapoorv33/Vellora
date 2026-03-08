@@ -1,7 +1,6 @@
 "use client";
 
-import { LatLngTuple } from "leaflet";
-import L from "leaflet";
+import { LatLngTuple, DivIcon } from "leaflet";
 import { useEffect, useState } from "react";
 import { MapContainer, Polygon, TileLayer, Tooltip, useMap, Marker } from "react-leaflet";
 
@@ -10,43 +9,53 @@ const territory: LatLngTuple[] = [
   [23.262, 77.418],
   [23.256, 77.418],
 ];
-const runnerIcon = L.divIcon({
-  html: '<div class="runner-marker">🏃</div>',
-  iconSize: [30, 30],
-  className: "",
-});
+function LiveLocation() {
+  const map = useMap();
 
-function LiveLocation(){
-    const map = useMap();
-    const [position, setPosition] = useState<LatLngTuple | null>(null);
+  const [runnerIcon, setRunnerIcon] = useState<DivIcon | null>(null);
+  const [position, setPosition] = useState<LatLngTuple | null>(null);
 
-    useEffect(()=>{
-        if(!navigator.geolocation){
-            return ;
-        }
+  useEffect(() => {
+    import("leaflet").then((L) => {
+      const icon = L.divIcon({
+        html: "🏃",
+        className: "",
+        iconSize: [30, 30],
+      });
 
-        const watchId = navigator.geolocation.watchPosition((pos)=>{
-            const coords: LatLngTuple = [pos.coords.latitude, pos.coords.longitude];
-            setPosition(coords);
-            map.setView(coords);
-        },
-        (err)=>{
-            console.error("Error getting location: ", err);
-        },
-        {enableHighAccuracy: true,
-            maximumAge: 10000,
-            timeout: 5000
-        });
+      setRunnerIcon(icon);
+    });
+  }, []);
 
-        return ()=>{
-            navigator.geolocation.clearWatch(watchId);
-        }   
-},[map])
-if (!position) return null;
+  useEffect(() => {
+    if (!navigator.geolocation) return;
 
-  return (
-  <Marker position={position} icon={runnerIcon} />
-);
+    const watchId = navigator.geolocation.watchPosition(
+      (pos) => {
+        const coords: LatLngTuple = [
+          pos.coords.latitude,
+          pos.coords.longitude,
+        ];
+
+        setPosition(coords);
+        map.setView(coords, 16);
+      },
+      (err) => {
+        console.error("Error getting location:", err);
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 5000,
+      }
+    );
+
+    return () => navigator.geolocation.clearWatch(watchId);
+  }, [map]);
+
+  if (!position || !runnerIcon) return null;
+
+  return <Marker position={position} icon={runnerIcon} />;
 }
 
 
