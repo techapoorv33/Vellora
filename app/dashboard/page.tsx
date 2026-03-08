@@ -99,25 +99,23 @@ export default function Dashboard() {
         {/* Map */}
         <div className="lg:col-span-2 rounded-xl overflow-hidden border border-[#1A2236]">
           <TerritoryMap isRunning={isRunning} />
-        <div className="flex gap-4 items-center justify-center mt-4">
-          {!isRunning && (
-            <button
-              onClick={() => setIsRunning(true)}
-              className="bg-[#00F5A0] text-black px-6 py-2 rounded-lg font-semibold"
-            >
-              Start Run
-            </button>
-          )}
-
-          {isRunning && (
-            <button
-              onClick={() => setIsRunning(false)}
-              className="bg-red-500 px-6 py-2 rounded-lg font-semibold"
-            >
-              Stop Run
-            </button>
-          )}
-        </div>
+          <div className="flex gap-4 items-center justify-center mt-4">
+            {!isRunning ? (
+              <button
+                onClick={() => setIsRunning(true)}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#00F5A0] text-black px-8 py-3 rounded-full font-bold shadow-lg"
+              >
+                Start
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsRunning(false)}
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-red-500 text-white px-8 py-3 rounded-full font-bold shadow-lg"
+              >
+                Stop
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Right Side Panel */}
